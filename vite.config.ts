@@ -15,15 +15,17 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()]
     })
   ],
-  alias: {
-    '@': path.resolve(__dirname, 'src')
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src')
+    }
   },
   server: {
     host: 'localhost',
     port: 9000,
     proxy: {
       '/api': {
-        target: 'http://124.221.159.81:8001/',
+        target: 'http://localhost:8100/',
         ws: false,
         changeOrigin: true, // 允许跨域
         rewrite: path => path.replace(/^\/api/, '')

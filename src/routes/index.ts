@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
 const routes = [
+  { path: '/word', name: '文档', component: () => import('../view/wordList.vue') },
   { path: '/', name: '用户列表', component: () => import('../view/user.vue') },
   { path: '/tailwind', name: 'tailwind', component: () => import('../view/tailwind.vue') },
   {

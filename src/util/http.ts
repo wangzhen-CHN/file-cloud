@@ -6,11 +6,10 @@ const service = axios.create({
   headers: { 'content-type': 'application/json;charset=UTF-8' }
 })
 
-function get(url:any, params:any) {
+export function get(url:any, params:any) {
+  console.log('🏳️‍🌈 <输出> params', params)
   return new Promise((resolve, reject) => {
-    service.get(url, {
-      params: params
-    })
+    service.get(url, {params:params})
       .then((res) => {
         resolve(res.data)
       })
@@ -19,7 +18,7 @@ function get(url:any, params:any) {
       })
   })
 }
-function post(url:any, params:any) {
+export function post(url:any, params:any) {
   return new Promise((resolve, reject) => {
     service.post(url, params)
       .then((res) => {
@@ -30,6 +29,6 @@ function post(url:any, params:any) {
       })
   })
 }
-const http = { post, get }
+// const http = { post, get }
 
-export default http
+export default  { post, get }

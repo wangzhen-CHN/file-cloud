@@ -13,7 +13,7 @@
       </div>
     </div>
     <div class="table-container mt-20">
-      <el-table :data="userList">
+      <el-table :data="userList" empty-text="暂无数据">
         <el-table-column prop="username" label="用户" />
         <el-table-column prop="realname" label="昵称" />
         <el-table-column prop="state" label="状态">
@@ -38,9 +38,9 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { Plus, RefreshLeft, Search, Setting } from '@element-plus/icons-vue'
-import http from '@/util/http'
 import { ref, onMounted } from 'vue'
+import { Plus, RefreshLeft, Search, Setting } from '@element-plus/icons-vue'
+import { get } from '@/util/http'
 
 interface LinkItem {
   id: string
@@ -50,13 +50,12 @@ interface LinkItem {
 
 const userList = ref<LinkItem[]>([])
 const getList = async () => {
-  const res = await http.get('/user/query', { timestamp: Number(new Date()) })
+  const res = await get('/user/query', { timestamp: Number(new Date()) })
   userList.value = res.data.map((d) => {
     return { ...d, color: `#${Math.random().toString(16).substr(-6)}` }
   })
 }
-/** 导出getList */
-defineExpose({ getList })
+
 onMounted(() => {
   getList()
 })
