@@ -34,6 +34,7 @@ const form = ref({
 const wordList = ref([])
 const onSubmit = async () => {
   const { success, msg, data } = await http.get('/word/add', { ...form.value })
+  success && getList()
 }
 
 const getList = async () => {
