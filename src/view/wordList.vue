@@ -9,8 +9,12 @@
     </el-form-item>
   </el-form>
 
-  <el-row class="border-solid border-t text-left">
-    <el-col class="flex justify-between items-center border-solid border-b py-20" v-for="list in wordList" :key="list._id">
+  <el-row class="border-solid border-t border-zinc-100 text-left">
+    <el-col
+      class="flex justify-between items-center border-solid border-b border-zinc-100 p-20 hover:bg-gray-50 rounded-xl"
+      v-for="list in wordList"
+      :key="list._id"
+    >
       <div class="truncate w-1/3 font-medium">
         {{ list.content }}
       </div>

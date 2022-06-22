@@ -3,13 +3,13 @@
     <template v-for="route in routes">
       <el-sub-menu v-if="route.children?.length" :key="route.path" :index="route.path">
         <template #title>
-          <el-icon><Setting /></el-icon>
+          <el-icon><component :is="route.icon"></component></el-icon>
           <span>{{ route.name }}</span>
         </template>
         <el-menu-item v-for="child in route.children" :key="child.path" :index="child.path">{{ child.name }}</el-menu-item>
       </el-sub-menu>
       <el-menu-item v-else :key="route.path" :index="route.path">
-        <el-icon><Document /></el-icon>
+        <el-icon><component :is="route.icon"></component></el-icon>
         <template #title>{{ route.name }}</template>
       </el-menu-item>
     </template>
@@ -17,9 +17,10 @@
 </template>
 
 <script lang="ts" setup>
-import { Document, Setting } from '@element-plus/icons-vue'
 import { ref } from 'vue'
 import { routes } from '../routes'
+import { Document, Setting } from '@element-plus/icons-vue'
+console.log('🏳️‍🌈 <输出> Document', Document)
 const activeKey = ref(window.location.pathname)
 </script>
 
