@@ -9,7 +9,7 @@ const service = axios.create({
 export function get(url:any, params:any) {
   console.log('🏳️‍🌈 <输出> params', params)
   return new Promise((resolve, reject) => {
-    service.get(url, {params:params})
+    service.get(url, {params})
       .then((res) => {
         resolve(res.data)
       })

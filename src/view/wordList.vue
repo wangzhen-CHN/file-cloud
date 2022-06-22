@@ -1,7 +1,7 @@
 <template>
   <el-form :model="form" class="demo-form-inline">
     <el-form-item label="">
-      <el-input v-model="form.content" :rows="4" type="textarea" placeholder="请输入" />
+      <el-input v-model="form.content" :rows="4" type="textarea" id="contentTextarea" placeholder="请输入" />
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="onSubmit">保存</el-button>
@@ -16,8 +16,8 @@
       </div>
       <div class="text-14 text-stone-500">{{ list.createDate }}</div>
       <div class="flex">
-        <el-button class="font-semibold" type="primary" text :icon="DocumentCopy">复制</el-button>
-        <el-button class="font-semibold" type="danger" text :icon="Delete">删除</el-button>
+        <el-button class="font-semibold" type="primary" text :icon="DocumentCopy" @click="onCopy(list.content)">复制</el-button>
+        <el-button class="font-semibold" type="danger" text :icon="Delete" @click="onDelete(list._id)">删除</el-button>
       </div>
     </el-col>
   </el-row>
@@ -33,14 +33,34 @@ const form = ref({
 })
 const wordList = ref([])
 const onSubmit = async () => {
-  const { success, msg, data } = await http.get('/word/add', { ...form.value })
+  const { success, msg, data } = await http.get('/word/add', form.value)
   success && getList()
+  ElMessage.success('添加成功')
 }
 
 const getList = async () => {
   const res = await http.get('/word/query')
-  console.log('🏳️‍🌈 <输出> res', res)
   wordList.value = res.data
+}
+const onCopy = (value) => {
+  // 创建输入框
+  var textarea = document.createElement('textarea')
+  document.body.appendChild(textarea)
+  // 隐藏此输入框
+  textarea.style.position = 'absolute'
+  textarea.style.clip = 'rect(0 0 0 0)'
+  // 赋值
+  textarea.value = value
+  // 选中
+  textarea.select()
+  // 复制
+  document.execCommand('copy', true)
+  ElMessage.success('内容已复制')
+}
+const onDelete = async (id) => {
+  const { success } = await http.get('/word/delete', { id })
+  success && ElMessage.success('删除成功')
+  success && getList()
 }
 
 onMounted(() => {
