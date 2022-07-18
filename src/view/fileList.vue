@@ -78,11 +78,13 @@ const handleCheckAllChange = async (value) => {
   checkedList.value = value ? fileList.value.map((list) => list.id) : []
 }
 const onCheckFile = (file) => {
-  const _pathList = pathList.value
-  const last = _pathList.length ? _pathList[_pathList.length - 1].path : ''
-  const current = last + '/' + file.name
-  pathList.value.push({ name: file.name, path: current })
-  file.type === 'directory' && getList(current)
+  if (file.type === 'directory') {
+    const _pathList = pathList.value
+    const last = _pathList.length ? _pathList[_pathList.length - 1].path : ''
+    const current = last + '/' + file.name
+    pathList.value.push({ name: file.name, path: current })
+    getList(current)
+  }
 }
 const onClickPath = (path) => {
   getList(path)
