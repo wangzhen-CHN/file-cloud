@@ -24,6 +24,7 @@
         <el-button class="font-semibold" type="danger" text :icon="Delete" @click="onDelete(list._id)">删除</el-button>
       </div>
     </el-col>
+    <el-col class="mt-40 text-center text-stone-500" v-if="!wordList.length"> 暂无数据 </el-col>
   </el-row>
 </template>
 
