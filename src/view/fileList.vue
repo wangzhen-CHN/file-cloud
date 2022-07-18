@@ -9,33 +9,33 @@
     </el-form-item>
   </el-form>
   <div v-if="fileList && fileList.length">
+    <div class="text-left text-18 ml-16 font-bold">
+      <span class="text-gray-400 path-item" v-for="path in pathList" @click="onClickPath(path.path)">/{{ path.name }}</span>
+    </div>
     <div class="flex justify-between m-16 pb-16 px-8 border-b">
       <el-checkbox v-model="checkAll" :indeterminate="checkedList.length > 0 && !checkAll" @change="handleCheckAllChange">
         <span class="text-gray-400 text-14">共{{ fileList.length }}项</span>
-        <span class="text-gray-400 text-12 ml-10" style="color: #2b6bff">已选择{{ checkedList.length }}项</span>
+        <span class="text-gray-400 text-12 ml-8" style="color: #2b6bff">已选择{{ checkedList.length }}项</span>
       </el-checkbox>
       <div class="text-gray-400">
         <el-button type="primary" :icon="Download" text bg />
         <el-button type="danger" :icon="Delete" text bg />
       </div>
     </div>
+
     <el-checkbox-group v-model="checkedList" @change="onCheckChange">
       <el-row>
-        <el-col :span="4" class="file-item" v-for="list in fileList" :key="list.name">
+        <el-col :span="4" class="file-item" v-for="file in fileList" :key="file.name" @click="onCheckFile(file)">
           <div class="item-checkbox">
-            <el-checkbox :label="list"> </el-checkbox>
+            <el-checkbox :label="file" v-if="file.type === 'file'"> &nbsp;</el-checkbox>
           </div>
           <el-icon :size="50" color="#2b6bff">
-            <Document v-if="list.type === 'file'" />
-            <FolderOpened v-if="list.type === 'directory'" />
+            <Document v-if="file.type === 'file'" />
+            <FolderOpened v-if="file.type === 'directory'" />
           </el-icon>
-          <div class="truncate font-medium w-100 text-14 mt-14">{{ list.name }}</div>
-          <div class="text-14 text-stone-400 mt-4 text-12">{{ dayjs(list.createDate).format('YYYY-MM-DD HH:mm:ss') }}</div>
-          <div class="text-14 text-stone-400 mt-4 text-12">{{ list.size }}kb</div>
-          <div class="flex operate-btn">
-            <el-button type="primary" text class="item-operate">删除</el-button>
-            <el-button type="danger" text class="item-operate">下载</el-button>
-          </div>
+          <div class="truncate font-medium w-100 text-14 mt-14">{{ file.name }}</div>
+          <div class="text-14 text-stone-400 mt-4 text-12">{{ dayjs(file.createDate).format('YYYY-MM-DD HH:mm:ss') }}</div>
+          <div class="text-14 text-stone-400 mt-4 text-12">{{ file.size }}kb</div>
         </el-col>
       </el-row>
     </el-checkbox-group>
@@ -52,6 +52,7 @@ import http from '../util/http'
 const form = ref({
   content: ''
 })
+const pathList = ref([{ name: '主目录', path: '/' }])
 const checkedList = ref([])
 // const checkAll = ref(false)
 const fileList = ref([])
@@ -62,18 +63,11 @@ const onSubmit = async () => {
 }
 const checkAll = computed(() => checkedList.value.length > 0 && checkedList.value.length === fileList.value.length)
 
-const getList = async () => {
-  const res = await http.get('/file/query')
+const getList = async (path) => {
+  const res = await http.get('/file/query', { path })
   fileList.value = res.data
 }
-// const onCheckChange = (value, id) => {
-//   const sub = checkedList.value.findIndex((list) => list == id)
-//   if (value) {
-//     sub === -1 && checkedList.value.push(id)
-//   } else {
-//     sub > -1 && checkedList.value.splice(sub, 1)
-//   }
-// }
+
 const onDelete = async (id) => {
   const { success } = await http.get('/word/delete', { id })
   success && ElMessage.success('删除成功')
@@ -81,8 +75,19 @@ const onDelete = async (id) => {
 }
 
 const handleCheckAllChange = async (value) => {
-  console.log('🏳️‍🌈 <输出> value', value)
   checkedList.value = value ? fileList.value.map((list) => list.id) : []
+}
+const onCheckFile = (file) => {
+  const _pathList = pathList.value
+  const last = _pathList.length ? _pathList[_pathList.length - 1].path : ''
+  const current = last + '/' + file.name
+  pathList.value.push({ name: file.name, path: current })
+  file.type === 'directory' && getList(current)
+}
+const onClickPath = (path) => {
+  getList(path)
+  const index = pathList.value.findIndex((list) => list.path == path)
+  pathList.value = pathList.value.slice(0, index + 1)
 }
 
 onMounted(() => {
@@ -112,7 +117,6 @@ onMounted(() => {
   align-items: center;
   margin: 10px 20px;
   padding: 20px;
-  padding-bottom: 8px;
   border: 1px solid #f2f2f2;
   border-radius: 20px;
   cursor: pointer;
@@ -128,6 +132,7 @@ onMounted(() => {
 
 .item-checkbox {
   width: 100%;
+  height: 15px;
   text-align: left;
 }
 
@@ -154,5 +159,17 @@ onMounted(() => {
 
 .file-item:has(+ label) {
   background-color: #f4f4f460;
+}
+
+.path-item {
+  cursor: pointer;
+}
+
+.path-item:hover {
+  color: #2b6bff;
+}
+
+.path-item:last-child {
+  color: #222;
 }
 </style>

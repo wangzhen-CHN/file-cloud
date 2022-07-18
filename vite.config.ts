@@ -25,8 +25,8 @@ export default defineConfig({
     port: 9000,
     proxy: {
       '/api': {
-        // target: 'http://124.223.108.239:8100/',
-        target: 'http://127.0.0.1:8100/',
+        target: 'http://124.223.108.239:8100/',
+        // target: 'http://127.0.0.1:8100/',
         ws: false,
         changeOrigin: true, // 允许跨域
         rewrite: path => path.replace(/^\/api/, '')
