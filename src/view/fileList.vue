@@ -30,7 +30,12 @@
             <el-checkbox :label="file" v-if="file.type === 'file'"> &nbsp;</el-checkbox>
           </div>
           <el-icon :size="50" color="#2b6bff">
-            <Document v-if="file.type === 'file'" />
+            <img
+              width="40"
+              v-if="file.type === 'file' && file.name.indexOf('.png') > 0"
+              :src="`http://files.coder.wang${pathList[pathList.length - 1].path}/${file.name}`"
+            />
+            <Document v-if="file.type === 'file' && file.name.indexOf('.png') === -1" />
             <FolderOpened v-if="file.type === 'directory'" />
           </el-icon>
           <div class="truncate font-medium w-100 text-14 mt-14">{{ file.name }}</div>
@@ -52,7 +57,7 @@ import http from '../util/http'
 const form = ref({
   content: ''
 })
-const pathList = ref([{ name: '主目录', path: '/' }])
+const pathList = ref([{ name: '主目录', path: '' }])
 const checkedList = ref([])
 // const checkAll = ref(false)
 const fileList = ref([])
